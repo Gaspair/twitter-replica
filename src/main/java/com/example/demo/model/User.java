@@ -18,13 +18,33 @@ public class User {
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private UUID id;
 
+    @Column(name="user_name")
+    private String userName;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personal_info_id", referencedColumnName = "personal_info_id")
+    @Embedded
     private PersonalInfo personalInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tweet_id", referencedColumnName = "tweet_id")
-    private Tweet tweet;
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public PersonalInfo getPersonalInfo() {
+        return personalInfo;
+    }
+
+    public void setPersonalInfo(PersonalInfo personalInfo) {
+        this.personalInfo = personalInfo;
+    }
 }

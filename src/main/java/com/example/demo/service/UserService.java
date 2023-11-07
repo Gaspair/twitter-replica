@@ -12,11 +12,11 @@ public class UserService {
     private final UserStore store;
 
     @Autowired
-    public  UserService(UserStore store){
+    public UserService(UserStore store){
         this.store = store;
     }
 
-    public void save(User user){
+    public void saveUser(User user){
         store.save(user);
     }
 
