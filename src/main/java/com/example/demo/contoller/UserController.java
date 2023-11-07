@@ -3,10 +3,9 @@ package com.example.demo.contoller;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -22,7 +21,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getOne(@PathVariable("id") UUID id){
-        return service.getUser(id);
+    public User getOne(@PathVariable("id") String id){
+        return service.getUser(UUID.fromString(id));
+    }
+    @PostMapping
+    public ResponseEntity<String> saveUser(@RequestBody User user){
+        service.saveUser(user);
+
+        return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 }
