@@ -18,9 +18,8 @@ public class UserService {
     }
 
     public void saveUser(User user){
-        store.save(user);
+        store.saveUser(user);
     }
-
     public User getUserById(UUID uuid){
         return store.getUserByID(uuid);
     }
@@ -28,5 +27,9 @@ public class UserService {
         return store.getUserByHandle(string);
     }
 
+
+    public void deleteUser(User user){
+        store.deleteUser(user.getId());
+    }
 
 }

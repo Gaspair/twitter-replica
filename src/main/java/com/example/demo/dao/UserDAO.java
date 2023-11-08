@@ -24,12 +24,13 @@ public class UserDAO implements UserStore {
     }
 
     @Override
-    public void save(User user) {
+    public void saveUser(User user) {
         userRepo.save(user);
     }
 
     @Override
-    public void delete(UUID id) {
+    public void deleteUser(UUID id) {
+    userRepo.deleteById(id);
 
     }
 
