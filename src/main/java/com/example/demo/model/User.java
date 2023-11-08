@@ -18,18 +18,19 @@ public class User {
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private UUID id;
 
-    @Column(name="user_name")
-    private String userName;
+
+    @Column(name="handle",unique = true)
+    private String handle;
 
     @Embedded
     private PersonalInfo personalInfo;
 
-    public String getUserName() {
-        return userName;
+    public String getHandle() {
+        return handle;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setHandle(String handle) {
+        this.handle = handle;
     }
 
     public UUID getId() {

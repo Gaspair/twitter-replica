@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -33,8 +34,13 @@ public class UserDAO implements UserStore {
     }
 
     @Override
-    public User getUser(UUID uuid) {
+    public User getUserByID(UUID uuid) {
         return userRepo.findById(uuid).get();
+    }
+
+    @Override
+    public List<User> getUserByHandle(String handle) {
+        return userRepo.findByHandleContaining(handle);
     }
 
     @Override

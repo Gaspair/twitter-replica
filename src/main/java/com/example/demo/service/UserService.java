@@ -4,6 +4,7 @@ import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,8 +21,11 @@ public class UserService {
         store.save(user);
     }
 
-    public User getUser(UUID uuid){
-        return store.getUser(uuid);
+    public User getUserById(UUID uuid){
+        return store.getUserByID(uuid);
+    }
+    public List<User> getUserByHandle(String string){
+        return store.getUserByHandle(string);
     }
 
 
