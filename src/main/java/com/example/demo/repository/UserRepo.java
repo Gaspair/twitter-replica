@@ -10,7 +10,8 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, UUID> {
-    List<User> findByHandleContaining(String handler);
+    List<User> findByHandleContaining(String handle);
 
+    User findByHandle(String handle);
 
 }

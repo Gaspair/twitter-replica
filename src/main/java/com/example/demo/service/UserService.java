@@ -17,14 +17,15 @@ public class UserService {
         this.store = store;
     }
 
+
     public void saveUser(User user){
         store.saveUser(user);
     }
     public User getUserById(UUID uuid){
         return store.getUserByID(uuid);
     }
-    public List<User> getUserByHandle(String string){
-        return store.getUserByHandle(string);
+    public List<User> getUsersByHandle(String string){
+        return store.getUsersByHandle(string);
     }
 
 
@@ -32,4 +33,7 @@ public class UserService {
         store.deleteUser(user.getId());
     }
 
+    public User getOneUserByHandle(String handle) {
+        return store.getOneUserByHandle(handle);
+    }
 }

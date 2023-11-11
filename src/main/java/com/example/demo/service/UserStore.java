@@ -10,9 +10,10 @@ public interface UserStore {
     void deleteUser(UUID id);
     User getUserByID(UUID uuid);
 
-    List<User> getUserByHandle(String handle);
+    List<User> getUsersByHandle(String handle);
     Boolean userExists(String user);
     User update(User user);
 
 
+    User getOneUserByHandle(String handle);
 }

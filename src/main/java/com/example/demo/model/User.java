@@ -2,10 +2,11 @@ package com.example.demo.model;
 
 
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -13,7 +14,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @Type(type = "uuid-char")
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private UUID id;
@@ -24,6 +24,17 @@ public class User {
 
     @Embedded
     private PersonalInfo personalInfo;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Tweet> tweets;
+
+    public List<Tweet> getTweets() {
+        return tweets;
+    }
+
+    public void setTweets(List<Tweet> tweets) {
+        this.tweets = tweets;
+    }
 
     public String getHandle() {
         return handle;
