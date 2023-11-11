@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserStore {
-    void save(User user);
-    void delete(UUID id);
+    void saveUser(User user);
+    void deleteUser(UUID id);
     User getUserByID(UUID uuid);
 
-    List<User> getUserByHandle(String handle);
+    List<User> getUsersByHandle(String handle);
     Boolean userExists(String user);
     User update(User user);
 
 
+    User getOneUserByHandle(String handle);
 }

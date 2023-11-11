@@ -3,10 +3,10 @@ package com.example.demo.dao;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.UserStore;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,19 +17,10 @@ public class UserDAO implements UserStore {
     private UserRepo userRepo;
 
 
+
     @Autowired
     public UserDAO(UserRepo userRepo ) {
         this.userRepo = userRepo;
-
-    }
-
-    @Override
-    public void save(User user) {
-        userRepo.save(user);
-    }
-
-    @Override
-    public void delete(UUID id) {
 
     }
 
@@ -39,9 +30,10 @@ public class UserDAO implements UserStore {
     }
 
     @Override
-    public List<User> getUserByHandle(String handle) {
+    public List<User> getUsersByHandle(String handle) {
         return userRepo.findByHandleContaining(handle);
     }
+
 
     @Override
     public Boolean userExists(String userID) {
@@ -49,7 +41,23 @@ public class UserDAO implements UserStore {
     }
 
     @Override
+    public void saveUser(User user) {
+        userRepo.save(user);
+    }
+
+
+    @Override
+    public void deleteUser(UUID id) {
+        userRepo.deleteById(id);
+
+    }
+    @Override
     public User update(User user) {
         return null;
+    }
+
+    @Override
+    public User getOneUserByHandle(String handle) {
+        return userRepo.findByHandle(handle);
     }
 }

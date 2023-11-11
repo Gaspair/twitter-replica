@@ -26,15 +26,29 @@ public class UserController {
         return service.getUserById(UUID.fromString(id));
     }
 
-    @GetMapping("/search/{handle}")
-    public List<User> getOneByHandler(@PathVariable("handle") String handle){
-        return service.getUserByHandle(handle);
+//    WORKS
+    @GetMapping("/profile/{handle}")
+    public User getOneByHandle(@PathVariable("handle") String handle){
+        return service.getOneUserByHandle(handle);
     }
+// Doesn't work yet
+    @GetMapping("/search/{handle}")
+    public List<User> getUsersByHandler(@PathVariable("handle") String handle){
+        return service.getUsersByHandle(handle);
+    }
+
 
     @PostMapping
     public ResponseEntity<String> saveUser(@RequestBody User user){
         service.saveUser(user);
 
         return new ResponseEntity<>("User created", HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<String> deleteUser(@RequestBody User user){
+        service.deleteUser(user);
+
+        return  new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 }

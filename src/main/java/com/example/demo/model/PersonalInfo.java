@@ -1,16 +1,17 @@
 package com.example.demo.model;
 
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
 import java.util.UUID;
 
 @Embeddable
 public class PersonalInfo {
 
-    //Vreau sa fac astfel incat id-ul clientului sa fie primary key si pentru personal info dar intr-o schema diferita
+
 
 
     @Column(name="first_name")
