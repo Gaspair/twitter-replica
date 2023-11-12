@@ -1,14 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Tweet;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepo;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class TweetService {
@@ -18,20 +14,35 @@ public class TweetService {
 
 
     @Autowired
-    public TweetService(TweetStore tweetStore,UserRepo userRepo) {
+    public TweetService(TweetStore tweetStore) {
         this.tweetStore = tweetStore;
 
     }
 
 
-    public void saveTweet( Tweet tweet) {
-        tweetStore.saveTweet(tweet);
+    public void saveTweetReply(Tweet tweet, String handle, String parentTweetId) {
+        tweetStore.saveTweetReply(tweet,handle,parentTweetId);
     }
 
+    public Tweet  getTweetById(String id){
+        return tweetStore.getTweetById(id);
+    }
+
+
+     public List <Tweet> getTweetsByTags(List<String> tags){
+        return tweetStore.getTweetsByTags(tags);
+     }
 
     public List<Tweet> getTweetsByUserHandle(String handle){
         return tweetStore.getTweetsByUserHandle(handle);
+
+
+    }
+    public void deleteTweet(Tweet tweet){
+        tweetStore.deleteTweet(tweet);
     }
 
-
+    public void saveTweet(Tweet tweet, String handle) {
+        tweetStore.saveTweet(tweet,handle);
+    }
 }

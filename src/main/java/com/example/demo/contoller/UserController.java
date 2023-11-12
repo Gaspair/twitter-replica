@@ -31,7 +31,7 @@ public class UserController {
     public User getOneByHandle(@PathVariable("handle") String handle){
         return service.getOneUserByHandle(handle);
     }
-// Doesn't work yet
+
     @GetMapping("/search/{handle}")
     public List<User> getUsersByHandler(@PathVariable("handle") String handle){
         return service.getUsersByHandle(handle);
@@ -45,9 +45,11 @@ public class UserController {
         return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@RequestBody User user){
-        service.deleteUser(user);
+
+
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
+        service.deleteUser(service.getUserById(UUID.fromString(id)));
 
         return  new ResponseEntity<>("User deleted", HttpStatus.OK);
     }

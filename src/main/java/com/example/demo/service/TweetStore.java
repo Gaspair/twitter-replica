@@ -6,7 +6,15 @@ import java.util.List;
 
 public interface TweetStore {
 
-    void saveTweet(Tweet tweet);
+    void saveTweetReply(Tweet tweet, String handle, String parentTweetId);
 
-    List<Tweet> getTweetsByUserHandle(String user);
+    List<Tweet> getTweetsByUserHandle(String handle);
+
+    List <Tweet> getTweetsByTags(List<String> tags);
+
+    Tweet getTweetById(String tweetId);
+
+    void saveTweet(Tweet tweet, String handle);
+
+    void deleteTweet(Tweet tweet);
 }

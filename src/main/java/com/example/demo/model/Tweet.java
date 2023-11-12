@@ -1,19 +1,23 @@
 package com.example.demo.model;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "tweet", schema = "twt")
-@JsonIgnoreProperties({"replies"})
 public class Tweet {
+
+    public Tweet() {
+    }
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -22,6 +26,7 @@ public class Tweet {
     private UUID tweetID;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "creator_id", nullable = false)
     private User user;
 
@@ -37,21 +42,35 @@ public class Tweet {
     @Column(name = "retweets_count")
     private Integer retweetCount;
 
-    @Column(name = "is_active",columnDefinition = "boolean default false")
-    private boolean isActive;
-
+    @Column(name = "is_active", nullable = false)
+    private Boolean isTweetActive;
 
 
     @ManyToOne
-    @JoinColumn(name = "parent_tweet_id",nullable = true)
     @JsonBackReference
+    @JoinColumn(name = "parent_tweet_id")
     private Tweet parentTweet;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "parentTweet", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Tweet> replies;
 
 
+    @CreationTimestamp
+    @Column(name="created_at", updatable = false)
+    private final Date createdAt = new Date();
+
+    public Boolean getTweetActive() {
+        return isTweetActive;
+    }
+
+    public void setTweetActive(Boolean tweetActive) {
+        isTweetActive = tweetActive;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
     public UUID getTweetID() {
         return tweetID;
@@ -101,13 +120,7 @@ public class Tweet {
         this.retweetCount = retweetCount;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
 
-    public void setActive(boolean active) {
-        isActive = active;
-    }
 
     public Tweet getParentTweet() {
         return parentTweet;
