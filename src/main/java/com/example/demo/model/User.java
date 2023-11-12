@@ -3,15 +3,19 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "user", schema = "usr")
 public class User {
+
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -27,6 +31,26 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Tweet> tweets;
+
+    @CreationTimestamp
+    @Column(name="created_at", updatable = false)
+    private final Date createdAt = new Date();
+
+    @UpdateTimestamp
+    @Column(name="last_modified_date")
+    private Date lastModifiedDate;
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
     public List<Tweet> getTweets() {
         return tweets;

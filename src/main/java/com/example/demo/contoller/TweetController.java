@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/tweet")
@@ -33,13 +34,11 @@ public class TweetController {
         }
     }
 
-
-    @PostMapping("/reply/{handle}/{parentTweetId}")
-    public ResponseEntity<String> saveTweetReply(@RequestBody Tweet tweet, @PathVariable String handle, @PathVariable String parentTweetId) {
-        tweetService.saveTweetReply(tweet,handle,parentTweetId);
-        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    @RequestMapping(value="/tags", method=RequestMethod.GET)
+    @ResponseBody
+    public List <Tweet> getTweetsByTags( @RequestParam("tags") List<String> tags){
+        return tweetService.getTweetsByTags(tags);
     }
-
 
     @PostMapping("/create/{handle}")
     public ResponseEntity<String> saveTweet(@RequestBody Tweet tweet, @PathVariable String handle) {
@@ -47,7 +46,16 @@ public class TweetController {
         return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
     }
 
+    @PostMapping("/reply/{handle}/{parentTweetId}")
+    public ResponseEntity<String> saveTweetReply(@RequestBody Tweet tweet, @PathVariable String handle, @PathVariable String parentTweetId) {
+        tweetService.saveTweetReply(tweet,handle,parentTweetId);
+        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    }
 
+    @DeleteMapping("/delete/{tweetId}")
+    public ResponseEntity<String> deleteTweet(@PathVariable String tweetId){
+       tweetService.deleteTweet(tweetService.getTweetById(tweetId));
+        return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
 
-
+    }
 }

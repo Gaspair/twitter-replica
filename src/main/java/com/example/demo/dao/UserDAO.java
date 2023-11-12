@@ -51,10 +51,10 @@ public class UserDAO implements UserStore {
         userRepo.deleteById(id);
 
     }
-    @Override
-    public void updateUser(User user) {
-        userRepo.updateUser(user);
-    }
+//    @Override
+//    public void updateUser(User user) {
+//        userRepo.updateUser(user);
+//    }
 
     @Override
     public User getOneUserByHandle(String handle) {

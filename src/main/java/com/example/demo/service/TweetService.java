@@ -29,12 +29,18 @@ public class TweetService {
     }
 
 
+     public List <Tweet> getTweetsByTags(List<String> tags){
+        return tweetStore.getTweetsByTags(tags);
+     }
+
     public List<Tweet> getTweetsByUserHandle(String handle){
         return tweetStore.getTweetsByUserHandle(handle);
 
 
     }
-
+    public void deleteTweet(Tweet tweet){
+        tweetStore.deleteTweet(tweet);
+    }
 
     public void saveTweet(Tweet tweet, String handle) {
         tweetStore.saveTweet(tweet,handle);

@@ -12,7 +12,7 @@ public interface UserStore {
 
     List<User> getUsersByHandle(String handle);
     Boolean userExists(String user);
-    void updateUser(User user);
+//    void updateUser(User user);
 
 
     User getOneUserByHandle(String handle);

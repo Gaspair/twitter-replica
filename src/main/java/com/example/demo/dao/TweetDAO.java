@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 
 import com.example.demo.model.Tweet;
+import com.example.demo.model.TweetStatusType;
 import com.example.demo.model.User;
 import com.example.demo.repository.TweetRepo;
 import com.example.demo.repository.UserRepo;
@@ -44,6 +45,11 @@ public class TweetDAO implements TweetStore {
     }
 
     @Override
+    public List <Tweet> getTweetsByTags(List<String> tags){
+        return tweetRepo.findAllByTagsIn(tags);
+    }
+
+    @Override
     public Tweet getTweetById(String tweetId) {
         return tweetRepo.getReferenceById(UUID.fromString(tweetId));
     }
@@ -58,12 +64,12 @@ public class TweetDAO implements TweetStore {
 
 
         tweet.setParentTweet(tweetRepo.getReferenceById(UUID.fromString(parentTweetId)));
-        tweet.setActive(true);
+
 
         if (user != null) {
             tweet.setUser(user);
         }
-
+        tweet.setTweetActive(true);
         tweetRepo.save(tweet);
     }
 
@@ -77,9 +83,12 @@ public class TweetDAO implements TweetStore {
         }else{
             throw new IllegalArgumentException("User does not exist!");
         }
-        tweet.setActive(true);
+        tweet.setTweetActive(true);
         tweetRepo.save(tweet);
     }
 
-
+    @Override
+    public void deleteTweet(Tweet tweet) {
+        tweetRepo.deleteTweetByTweetID(tweet.getTweetID());
+    }
 }

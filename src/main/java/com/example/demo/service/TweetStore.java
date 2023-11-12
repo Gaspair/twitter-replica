@@ -10,7 +10,11 @@ public interface TweetStore {
 
     List<Tweet> getTweetsByUserHandle(String handle);
 
+    List <Tweet> getTweetsByTags(List<String> tags);
+
     Tweet getTweetById(String tweetId);
 
     void saveTweet(Tweet tweet, String handle);
+
+    void deleteTweet(Tweet tweet);
 }

@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TweetRepo extends JpaRepository<Tweet, UUID> {
-    List<Tweet> findTweetsByTags(String[] tags);
+    List<Tweet> findAllByTagsIn(List<String> tags);
     List<Tweet> findByUser(User user);
+    void deleteTweetByTweetID(UUID tweetId);
 
 }
