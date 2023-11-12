@@ -52,8 +52,8 @@ public class UserDAO implements UserStore {
 
     }
     @Override
-    public User update(User user) {
-        return null;
+    public void updateUser(User user) {
+        userRepo.updateUser(user);
     }
 
     @Override
