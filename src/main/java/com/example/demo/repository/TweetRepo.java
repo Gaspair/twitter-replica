@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface TweetRepo extends JpaRepository<Tweet, UUID> {
     List<Tweet> findTweetsByTags(String[] tags);
-    List<Tweet> findTweetsByUser(User user);
+    List<Tweet> findByUser(User user);
+
 }

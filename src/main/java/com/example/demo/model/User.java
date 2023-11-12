@@ -19,7 +19,7 @@ public class User {
     private UUID id;
 
 
-    @Column(name="handle",unique = true)
+    @Column(name="handle",unique = true,nullable = false)
     private String handle;
 
     @Embedded
@@ -59,4 +59,5 @@ public class User {
     public void setPersonalInfo(PersonalInfo personalInfo) {
         this.personalInfo = personalInfo;
     }
+
 }

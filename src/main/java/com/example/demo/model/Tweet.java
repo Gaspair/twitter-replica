@@ -1,8 +1,8 @@
 package com.example.demo.model;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -12,8 +12,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tweet", schema = "twt")
-@JsonIgnoreProperties({"replies"})
 public class Tweet {
+
+    public Tweet() {
+    }
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -22,6 +24,7 @@ public class Tweet {
     private UUID tweetID;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "creator_id", nullable = false)
     private User user;
 
@@ -37,18 +40,17 @@ public class Tweet {
     @Column(name = "retweets_count")
     private Integer retweetCount;
 
-    @Column(name = "is_active",columnDefinition = "boolean default false")
-    private boolean isActive;
-
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private Boolean isActive;
 
 
     @ManyToOne
-    @JoinColumn(name = "parent_tweet_id",nullable = true)
     @JsonBackReference
+    @JoinColumn(name = "parent_tweet_id")
     private Tweet parentTweet;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "parentTweet", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Tweet> replies;
 
 

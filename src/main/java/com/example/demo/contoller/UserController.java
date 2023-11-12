@@ -31,7 +31,7 @@ public class UserController {
     public User getOneByHandle(@PathVariable("handle") String handle){
         return service.getOneUserByHandle(handle);
     }
-// Doesn't work yet
+
     @GetMapping("/search/{handle}")
     public List<User> getUsersByHandler(@PathVariable("handle") String handle){
         return service.getUsersByHandle(handle);

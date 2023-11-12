@@ -15,15 +15,11 @@ public class TweetController {
 
     private TweetService tweetService;
 
+
+
     @Autowired
     public TweetController(TweetService tweetService) {
         this.tweetService = tweetService;
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<String> saveTweet( @RequestBody Tweet tweet) {
-        tweetService.saveTweet(tweet);
-        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{handle}")
@@ -31,10 +27,27 @@ public class TweetController {
         List<Tweet> tweets = tweetService.getTweetsByUserHandle(handle);
 
         if (tweets.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } else {
-            return new ResponseEntity<>(tweets, HttpStatus.OK);
+            return ResponseEntity.ok(tweets);
         }
     }
+
+
+    @PostMapping("/reply/{handle}/{parentTweetId}")
+    public ResponseEntity<String> saveTweetReply(@RequestBody Tweet tweet, @PathVariable String handle, @PathVariable String parentTweetId) {
+        tweetService.saveTweetReply(tweet,handle,parentTweetId);
+        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/create/{handle}")
+    public ResponseEntity<String> saveTweet(@RequestBody Tweet tweet, @PathVariable String handle) {
+        tweetService.saveTweet(tweet,handle);
+        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    }
+
+
+
 
 }
