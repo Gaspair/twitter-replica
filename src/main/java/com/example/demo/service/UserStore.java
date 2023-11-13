@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -8,7 +9,7 @@ import java.util.UUID;
 public interface UserStore {
     void saveUser(User user);
     void deleteUser(UUID id);
-    User getUserByID(UUID uuid);
+    ResponseEntity<User> getUserByID(UUID uuid);
 
     List<User> getUsersByHandle(String handle);
     Boolean userExists(String user);

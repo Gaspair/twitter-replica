@@ -22,8 +22,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getOneByUUID(@PathVariable("id") String id){
-        return service.getUserById(UUID.fromString(id));
+    public ResponseEntity<User> getOneByUUID(@PathVariable("id") String id) {
+        try {
+            UUID userId = UUID.fromString(id);
+            User user = service.getUserById(userId).getBody();
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 //    WORKS
@@ -49,7 +59,7 @@ public class UserController {
 
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
-        service.deleteUser(service.getUserById(UUID.fromString(id)));
+        service.deleteUser(service.getUserById(UUID.fromString(id)).getBody());
 
         return  new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
