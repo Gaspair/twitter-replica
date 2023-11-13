@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class UserService {
     public void saveUser(User user){
         store.saveUser(user);
     }
-    public User getUserById(UUID uuid){
+    public ResponseEntity<User> getUserById(UUID uuid){
         return store.getUserByID(uuid);
     }
     public List<User> getUsersByHandle(String string){

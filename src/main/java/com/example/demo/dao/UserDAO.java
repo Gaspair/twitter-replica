@@ -5,9 +5,11 @@ import com.example.demo.repository.UserRepo;
 import com.example.demo.service.UserStore;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -25,8 +27,13 @@ public class UserDAO implements UserStore {
     }
 
     @Override
-    public User getUserByID(UUID uuid) {
-        return userRepo.findById(uuid).get();
+    public ResponseEntity<User> getUserByID(UUID uuid) {
+
+        Optional<User> optionalUser = userRepo.findById(uuid);
+        if(optionalUser.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.of(optionalUser);
     }
 
     @Override
