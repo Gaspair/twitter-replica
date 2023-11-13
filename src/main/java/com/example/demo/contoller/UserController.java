@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -17,8 +18,8 @@ public class UserController {
     private UserService service;
 
     @Autowired
-    public UserController(UserService service){
-        this.service= service;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping("/{id}")
@@ -36,31 +37,59 @@ public class UserController {
         }
     }
 
-//    WORKS
+    //    WORKS
     @GetMapping("/profile/{handle}")
-    public User getOneByHandle(@PathVariable("handle") String handle){
-        return service.getOneUserByHandle(handle);
+    public ResponseEntity<User> getOneByHandle(@PathVariable("handle") String handle) {
+        User user = service.getOneUserByHandle(handle);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/search/{handle}")
-    public List<User> getUsersByHandler(@PathVariable("handle") String handle){
-        return service.getUsersByHandle(handle);
+    public ResponseEntity<List<User>> getUsersByHandler(@PathVariable("handle") String handle) {
+        List<User> users = service.getUsersByHandle(handle);
+        if (!users.isEmpty()) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
     @PostMapping
-    public ResponseEntity<String> saveUser(@RequestBody User user){
-        service.saveUser(user);
+    public ResponseEntity<String> saveUser(@RequestBody User user) {
+        Optional<User> optionalUser = Optional.ofNullable(service.getOneUserByHandle(user.getHandle()));
 
-        return new ResponseEntity<>("User created", HttpStatus.CREATED);
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User handle already in use");
+        }
+        try {
+            service.saveUser(user);
+            return new ResponseEntity<>("User created", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating user");
+        }
     }
 
 
-
     @DeleteMapping("/deleteUser/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
-        service.deleteUser(service.getUserById(UUID.fromString(id)).getBody());
-
-        return  new ResponseEntity<>("User deleted", HttpStatus.OK);
+    public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
+        try {
+            UUID userId = UUID.fromString(id);
+            User existingUser = service.getUserById(userId).getBody();
+            if (existingUser != null) {
+                service.deleteUser(existingUser);
+                return new ResponseEntity<>("User deleted", HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid UUID");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user");
+        }
     }
 }
