@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -54,8 +55,16 @@ public class TweetController {
 
     @DeleteMapping("/delete/{tweetId}")
     public ResponseEntity<String> deleteTweet(@PathVariable String tweetId){
-       tweetService.deleteTweet(tweetService.getTweetById(tweetId));
-        return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
+        Optional<Tweet> optionalTweet = Optional.ofNullable(tweetService.getTweetById(tweetId));
+
+        if(optionalTweet != null){
+            tweetService.deleteTweet(tweetService.getTweetById(tweetId));
+            return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting tweet");
+
+        }
+
 
     }
 }
