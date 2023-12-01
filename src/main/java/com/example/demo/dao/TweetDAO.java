@@ -8,6 +8,8 @@ import com.example.demo.repository.UserRepo;
 import com.example.demo.service.TweetStore;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -70,7 +72,7 @@ public class TweetDAO implements TweetStore {
         if (user != null) {
             tweet.setUser(user);
         }
-        tweet.setTweetActive(true);
+
         tweetRepo.save(tweet);
     }
 
@@ -84,8 +86,46 @@ public class TweetDAO implements TweetStore {
         }else{
             throw new IllegalArgumentException("User does not exist!");
         }
-        tweet.setTweetActive(true);
         tweetRepo.save(tweet);
+    }
+
+    @Override
+    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String operationType){
+        Integer likesCount = tweet.getLikesCount();
+
+        if(Boolean.FALSE.equals(tweet.getTweetActive())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tweet is deactivated");
+        }
+
+        if(operationType.equals("increment")){
+            tweet.setLikesCount( likesCount + 1);
+            this.saveTweet(tweet, tweet.getUser().getHandle());
+            return ResponseEntity.status(HttpStatus.OK).body("Likes count updated +");
+        }else{
+            tweet.setLikesCount( likesCount - 1);
+            this.saveTweet(tweet, tweet.getUser().getHandle());
+            return ResponseEntity.status(HttpStatus.OK).body("Likes count updated -");
+        }
+    }
+
+    @Override
+    public ResponseEntity<String> statusUpdaterTweet(String tweetId) {
+        Optional<Tweet> optionalTweet = this.getTweetById(tweetId);
+
+        if(optionalTweet.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
+        }
+
+        Tweet tweet = optionalTweet.get();
+        Boolean tweetCurrentStatus = tweet.getTweetActive();
+        tweet.setTweetActive(!tweetCurrentStatus);
+        this.saveTweet(tweet, tweet.getUser().getHandle());
+
+        if (Boolean.TRUE.equals(tweetCurrentStatus)) {
+            return ResponseEntity.status(HttpStatus.OK).body("The tweet has been deactivated");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("The tweet has been activated");
+        }
     }
 
     @Override

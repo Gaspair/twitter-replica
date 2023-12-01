@@ -36,14 +36,15 @@ public class Tweet {
     @ElementCollection
     private List<String> tags;
 
-    @Column(name = "likes_count")
-    private Integer likesCount;
+    @Column(name = "likes_count", columnDefinition = "integer default 0")
+    private Integer likesCount = 0;
 
-    @Column(name = "retweets_count")
-    private Integer retweetCount;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isTweetActive;
+    @Column(name = "retweets_count", columnDefinition = "integer default 0")
+    private Integer retweetCount = 0;
+
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private Boolean isTweetActive = true;
 
 
     @ManyToOne

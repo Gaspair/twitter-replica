@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -41,14 +42,12 @@ public class TweetController {
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @ResponseBody
+    @GetMapping("")
     public List<Tweet> getTweetsByTags(@RequestParam("tags") List<String> tags) {
         return tweetService.getTweetsByTags(tags);
     }
 
-    @RequestMapping(value = "/create/{handle}", method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("/create/{handle}")
     public ResponseEntity<String> saveTweet(@RequestBody Tweet tweet, @PathVariable String handle, @RequestParam(required = false) String parentTweetId) {
 
         if (parentTweetId == null) {
@@ -56,22 +55,46 @@ public class TweetController {
             return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
         } else if (!tweetService.getTweetById(parentTweetId).isPresent()) {
             return new ResponseEntity<>("Tweet parent ID invalid", HttpStatus.NOT_FOUND);
-        }else{
+        } else {
+            if (tweetService.getTweetById(parentTweetId).get().getTweetActive() == false) {
+                return new ResponseEntity<>("Tweet is deactivated", HttpStatus.BAD_REQUEST);
+            }
             tweetService.saveTweetReply(tweet, handle, parentTweetId);
             return new ResponseEntity<>("Tweet reply created", HttpStatus.CREATED);
         }
     }
 
+    @PatchMapping("/{tweetId}")
+        public ResponseEntity<String> tweetLikesCounter(@PathVariable String tweetId, @RequestBody Map<String, String> requestBody) {
+        Optional<Tweet> optionalTweet = tweetService.getTweetById(tweetId);
+
+        if (optionalTweet.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet does not exist!");
+        }
+        Tweet tweet = optionalTweet.get();
+
+        if(requestBody.containsKey("likesCount")){
+            return tweetService.likesCounterTweet(tweet,requestBody.get("likesCount"));
+        }
+            return ResponseEntity.badRequest().body("Invalid request payload");
+    }
+    @PatchMapping("/changeStatus/{tweetId}")
+    public ResponseEntity<String> tweetStatusUpdater(@PathVariable String tweetId){
+            return tweetService.statusUpdateTweet(tweetId);
+    }
+
+
     @DeleteMapping("/delete/{tweetId}")
     public ResponseEntity<String> deleteTweet(@PathVariable String tweetId) {
         Optional<Tweet> optionalTweet = tweetService.getTweetById(tweetId);
 
-        if (optionalTweet != null) {
+        if (optionalTweet.isPresent()) {
             tweetService.deleteTweet(optionalTweet);
             return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting tweet");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error deleting tweet");
         }
 
     }
+
 }

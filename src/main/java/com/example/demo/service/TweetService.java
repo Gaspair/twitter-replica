@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,11 +40,20 @@ public class TweetService {
 
 
     }
+
     public void deleteTweet(Optional<Tweet> tweet){
         tweetStore.deleteTweet(tweet);
     }
 
+    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String likesCount){
+        return tweetStore.likesCounterTweet(tweet,likesCount);
+    };
+
+    public ResponseEntity<String> statusUpdateTweet(String tweetId){
+        return tweetStore.statusUpdaterTweet(tweetId);
+    }
     public void saveTweet(Tweet tweet, String handle) {
         tweetStore.saveTweet(tweet,handle);
     }
+
 }

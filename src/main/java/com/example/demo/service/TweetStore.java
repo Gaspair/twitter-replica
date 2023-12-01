@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Tweet;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,12 @@ public interface TweetStore {
     Optional <Tweet> getTweetById(String tweetId);
 
     void saveTweet(Tweet tweet, String handle);
+
+
+
+    ResponseEntity<String> likesCounterTweet(Tweet tweet, String operationsType);
+
+    ResponseEntity<String> statusUpdaterTweet(String tweetId);
 
     void deleteTweet(Optional<Tweet> tweet);
 }
