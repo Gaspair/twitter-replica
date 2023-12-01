@@ -8,15 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/tweet")
 public class TweetController {
 
     private TweetService tweetService;
-
-
 
     @Autowired
     public TweetController(TweetService tweetService) {
@@ -34,28 +33,68 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value="/tags", method=RequestMethod.GET)
-    @ResponseBody
-    public List <Tweet> getTweetsByTags( @RequestParam("tags") List<String> tags){
+    @GetMapping("/{tweetId}")
+    public ResponseEntity<?> getTweetById(@PathVariable String tweetId) {
+        Optional<Tweet> tweet = tweetService.getTweetById(tweetId);
+
+        return tweet.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @GetMapping("")
+    public List<Tweet> getTweetsByTags(@RequestParam("tags") List<String> tags) {
         return tweetService.getTweetsByTags(tags);
     }
 
     @PostMapping("/create/{handle}")
-    public ResponseEntity<String> saveTweet(@RequestBody Tweet tweet, @PathVariable String handle) {
-        tweetService.saveTweet(tweet,handle);
-        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    public ResponseEntity<String> saveTweet(@RequestBody Tweet tweet, @PathVariable String handle, @RequestParam(required = false) String parentTweetId) {
+
+        if (parentTweetId == null) {
+            tweetService.saveTweet(tweet, handle);
+            return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+        } else if (!tweetService.getTweetById(parentTweetId).isPresent()) {
+            return new ResponseEntity<>("Tweet parent ID invalid", HttpStatus.NOT_FOUND);
+        } else {
+            if (tweetService.getTweetById(parentTweetId).get().getTweetActive() == false) {
+                return new ResponseEntity<>("Tweet is deactivated", HttpStatus.BAD_REQUEST);
+            }
+            tweetService.saveTweetReply(tweet, handle, parentTweetId);
+            return new ResponseEntity<>("Tweet reply created", HttpStatus.CREATED);
+        }
     }
 
-    @PostMapping("/reply/{handle}/{parentTweetId}")
-    public ResponseEntity<String> saveTweetReply(@RequestBody Tweet tweet, @PathVariable String handle, @PathVariable String parentTweetId) {
-        tweetService.saveTweetReply(tweet,handle,parentTweetId);
-        return new ResponseEntity<>("Tweet created", HttpStatus.CREATED);
+    @PatchMapping("/{tweetId}")
+        public ResponseEntity<String> tweetLikesCounter(@PathVariable String tweetId, @RequestBody Map<String, String> requestBody) {
+        Optional<Tweet> optionalTweet = tweetService.getTweetById(tweetId);
+
+        if (optionalTweet.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet does not exist!");
+        }
+        Tweet tweet = optionalTweet.get();
+
+        if(requestBody.containsKey("likesCount")){
+            return tweetService.likesCounterTweet(tweet,requestBody.get("likesCount"));
+        }
+            return ResponseEntity.badRequest().body("Invalid request payload");
     }
+    @PatchMapping("/changeStatus/{tweetId}")
+    public ResponseEntity<String> tweetStatusUpdater(@PathVariable String tweetId){
+            return tweetService.statusUpdateTweet(tweetId);
+    }
+
 
     @DeleteMapping("/delete/{tweetId}")
-    public ResponseEntity<String> deleteTweet(@PathVariable String tweetId){
-       tweetService.deleteTweet(tweetService.getTweetById(tweetId));
-        return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
+    public ResponseEntity<String> deleteTweet(@PathVariable String tweetId) {
+        Optional<Tweet> optionalTweet = tweetService.getTweetById(tweetId);
+
+        if (optionalTweet.isPresent()) {
+            tweetService.deleteTweet(optionalTweet);
+            return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error deleting tweet");
+        }
 
     }
+
 }
