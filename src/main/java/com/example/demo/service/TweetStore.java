@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Tweet;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TweetStore {
 
@@ -12,9 +13,9 @@ public interface TweetStore {
 
     List <Tweet> getTweetsByTags(List<String> tags);
 
-    Tweet getTweetById(String tweetId);
+    Optional <Tweet> getTweetById(String tweetId);
 
     void saveTweet(Tweet tweet, String handle);
 
-    void deleteTweet(Tweet tweet);
+    void deleteTweet(Optional<Tweet> tweet);
 }

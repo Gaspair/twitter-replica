@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TweetService {
@@ -24,7 +25,7 @@ public class TweetService {
         tweetStore.saveTweetReply(tweet,handle,parentTweetId);
     }
 
-    public Tweet  getTweetById(String id){
+    public Optional<Tweet> getTweetById(String id){
         return tweetStore.getTweetById(id);
     }
 
@@ -38,7 +39,7 @@ public class TweetService {
 
 
     }
-    public void deleteTweet(Tweet tweet){
+    public void deleteTweet(Optional<Tweet> tweet){
         tweetStore.deleteTweet(tweet);
     }
 

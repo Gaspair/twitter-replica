@@ -2,7 +2,6 @@ package com.example.demo.dao;
 
 
 import com.example.demo.model.Tweet;
-import com.example.demo.model.TweetStatusType;
 import com.example.demo.model.User;
 import com.example.demo.repository.TweetRepo;
 import com.example.demo.repository.UserRepo;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -50,9 +50,10 @@ public class TweetDAO implements TweetStore {
     }
 
     @Override
-    public Tweet getTweetById(String tweetId) {
-        return tweetRepo.getReferenceById(UUID.fromString(tweetId));
+    public Optional<Tweet> getTweetById(String tweetId) {
+        return tweetRepo.findById(UUID.fromString(tweetId));
     }
+
 //    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
@@ -88,7 +89,7 @@ public class TweetDAO implements TweetStore {
     }
 
     @Override
-    public void deleteTweet(Tweet tweet) {
-        tweetRepo.deleteTweetByTweetID(tweet.getTweetID());
+    public void deleteTweet(Optional<Tweet> tweet) {
+        tweetRepo.deleteTweetByTweetID(tweet.get().getTweetID());
     }
 }
