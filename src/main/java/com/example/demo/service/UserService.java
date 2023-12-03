@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,22 +21,22 @@ public class UserService {
     }
 
 
-    public void saveUser(User user){
-        store.saveUser(user);
+    public ResponseEntity<?> saveUser(UserDTO userDTO){
+        return  store.saveUser(userDTO);
     }
-    public ResponseEntity<User> getUserById(UUID uuid){
+    public ResponseEntity<?> getUserById(UUID uuid){
         return store.getUserByID(uuid);
     }
-    public List<User> getUsersByHandle(String string){
-        return store.getUsersByHandle(string);
+    public ResponseEntity<?> getUsersByHandle(String string, int limit){
+        return store.getUsersByHandle(string,  limit);
     }
 
 
-    public void deleteUser(User user){
-        store.deleteUser(user.getId());
+    public ResponseEntity<?> deleteUser(UUID userID){
+       return store.deleteUser(userID);
     }
 
-    public User getOneUserByHandle(String handle) {
+    public ResponseEntity<?> getOneUserByHandle(String handle) {
         return store.getOneUserByHandle(handle);
     }
 }

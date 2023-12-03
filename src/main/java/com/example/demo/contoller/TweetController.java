@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -56,7 +55,7 @@ public class TweetController {
         } else if (!tweetService.getTweetById(parentTweetId).isPresent()) {
             return new ResponseEntity<>("Tweet parent ID invalid", HttpStatus.NOT_FOUND);
         } else {
-            if (tweetService.getTweetById(parentTweetId).get().getTweetActive() == false) {
+            if (tweetService.getTweetById(parentTweetId).get().getTweetStatus() == false) {
                 return new ResponseEntity<>("Tweet is deactivated", HttpStatus.BAD_REQUEST);
             }
             tweetService.saveTweetReply(tweet, handle, parentTweetId);
@@ -65,7 +64,7 @@ public class TweetController {
     }
 
     @PatchMapping("/{tweetId}")
-        public ResponseEntity<String> tweetLikesCounter(@PathVariable String tweetId, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<String> tweetLikesCounter(@PathVariable String tweetId,@RequestParam String userThatLikedTweet) {
         Optional<Tweet> optionalTweet = tweetService.getTweetById(tweetId);
 
         if (optionalTweet.isEmpty()) {
@@ -73,14 +72,12 @@ public class TweetController {
         }
         Tweet tweet = optionalTweet.get();
 
-        if(requestBody.containsKey("likesCount")){
-            return tweetService.likesCounterTweet(tweet,requestBody.get("likesCount"));
-        }
-            return ResponseEntity.badRequest().body("Invalid request payload");
+        return tweetService.likesCounterTweet(tweet,userThatLikedTweet);
     }
+
     @PatchMapping("/changeStatus/{tweetId}")
-    public ResponseEntity<String> tweetStatusUpdater(@PathVariable String tweetId){
-            return tweetService.statusUpdateTweet(tweetId);
+    public ResponseEntity<String> tweetStatusUpdater(@PathVariable String tweetId) {
+        return tweetService.statusUpdateTweet(tweetId);
     }
 
 

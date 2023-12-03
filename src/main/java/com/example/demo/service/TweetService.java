@@ -45,8 +45,8 @@ public class TweetService {
         tweetStore.deleteTweet(tweet);
     }
 
-    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String likesCount){
-        return tweetStore.likesCounterTweet(tweet,likesCount);
+    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet){
+        return tweetStore.likesCounterTweet(tweet,userThatLikedTweet);
     };
 
     public ResponseEntity<String> statusUpdateTweet(String tweetId){

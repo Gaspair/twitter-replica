@@ -20,7 +20,7 @@ public interface TweetStore {
 
 
 
-    ResponseEntity<String> likesCounterTweet(Tweet tweet, String operationsType);
+    ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet);
 
     ResponseEntity<String> statusUpdaterTweet(String tweetId);
 
