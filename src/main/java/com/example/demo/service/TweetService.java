@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.TweetDTO;
 import com.example.demo.model.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TweetService {
 
     private final TweetStore tweetStore;
-
 
 
     @Autowired
@@ -21,39 +22,33 @@ public class TweetService {
 
     }
 
-
-    public void saveTweetReply(Tweet tweet, String handle, String parentTweetId) {
-        tweetStore.saveTweetReply(tweet,handle,parentTweetId);
-    }
-
-    public Optional<Tweet> getTweetById(String id){
-        return tweetStore.getTweetById(id);
+    public ResponseEntity<?> getTweetById(UUID tweetID) {
+        return tweetStore.getTweetById(tweetID);
     }
 
 
-     public List <Tweet> getTweetsByTags(List<String> tags){
+    public ResponseEntity<?> getTweetsByTags(List<String> tags) {
         return tweetStore.getTweetsByTags(tags);
-     }
+    }
 
-    public List<Tweet> getTweetsByUserHandle(String handle){
+    public  ResponseEntity<?> getTweetsByUserHandle(String handle) {
         return tweetStore.getTweetsByUserHandle(handle);
-
-
     }
 
-    public void deleteTweet(Optional<Tweet> tweet){
-        tweetStore.deleteTweet(tweet);
+    public ResponseEntity<?> deleteTweet(UUID tweetID) {
+       return tweetStore.deleteTweet(tweetID);
     }
 
-    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet){
-        return tweetStore.likesCounterTweet(tweet,userThatLikedTweet);
-    };
-
-    public ResponseEntity<String> statusUpdateTweet(String tweetId){
-        return tweetStore.statusUpdaterTweet(tweetId);
+    public ResponseEntity<?> likesCounterTweet(UUID tweetID, String userThatLikedTweet) {
+        return tweetStore.likesCounterTweet(tweetID, userThatLikedTweet);
     }
-    public void saveTweet(Tweet tweet, String handle) {
-        tweetStore.saveTweet(tweet,handle);
+
+    public ResponseEntity<?> statusUpdaterTweet(UUID tweetID) {
+        return tweetStore.statusUpdaterTweet(tweetID);
+    }
+
+    public ResponseEntity<?> saveTweet(TweetDTO tweetDTO, String handle, UUID parentTweetID) {
+        return tweetStore.saveTweet(tweetDTO, handle, parentTweetID);
     }
 
 }

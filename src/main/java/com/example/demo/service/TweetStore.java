@@ -1,28 +1,30 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.TweetDTO;
 import com.example.demo.model.Tweet;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface TweetStore {
 
-    void saveTweetReply(Tweet tweet, String handle, String parentTweetId);
+    ResponseEntity<?> getTweetById(UUID tweetID);
 
-    List<Tweet> getTweetsByUserHandle(String handle);
+    ResponseEntity<?> getTweetsByUserHandle(String handle);
 
-    List <Tweet> getTweetsByTags(List<String> tags);
+    ResponseEntity<?> getTweetsByTags(List<String> tags);
 
-    Optional <Tweet> getTweetById(String tweetId);
-
-    void saveTweet(Tweet tweet, String handle);
+    ResponseEntity<?> saveTweet(TweetDTO tweet, String handle, UUID parentTweetID);
 
 
+    ResponseEntity<?> deleteTweet(UUID tweetID);
 
-    ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet);
 
-    ResponseEntity<String> statusUpdaterTweet(String tweetId);
+    ResponseEntity<?> likesCounterTweet(UUID tweetID, String userThatLikedTweet);
 
-    void deleteTweet(Optional<Tweet> tweet);
+    ResponseEntity<?> statusUpdaterTweet(UUID tweetID);
+
+
 }

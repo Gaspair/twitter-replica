@@ -1,6 +1,8 @@
 package com.example.demo.dao;
 
 
+import com.example.demo.dto.TweetDTO;
+import com.example.demo.mappers.TweetMapper;
 import com.example.demo.model.Tweet;
 import com.example.demo.model.User;
 import com.example.demo.model.UserLike;
@@ -24,160 +26,151 @@ import java.util.UUID;
 public class TweetDAO implements TweetStore {
     private TweetRepo tweetRepo;
     private UserRepo userRepo;
-
     private UserLikeRepo userLikeRepo;
+    private TweetMapper tweetMapper;
 
     @Autowired
-    public TweetDAO(TweetRepo tweetRepo, UserRepo userRepo,UserLikeRepo userLikeRepo) {
+    public TweetDAO(TweetRepo tweetRepo, UserRepo userRepo, UserLikeRepo userLikeRepo, TweetMapper tweetMapper) {
         this.tweetRepo = tweetRepo;
         this.userRepo = userRepo;
         this.userLikeRepo = userLikeRepo;
+        this.tweetMapper = tweetMapper;
     }
 
-    //    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-// GET REQUESTS BELOW"
+
     @Override
-    public List<Tweet> getTweetsByUserHandle(String handle) {
+    public ResponseEntity<?> getTweetById(UUID tweetId) {
+        Optional<Tweet> tweetOptional = tweetRepo.findById(tweetId);
+
+        if (tweetOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
+        }
+
+        TweetDTO tweetDTO = tweetMapper.tweetToTweetDTO(tweetOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body(tweetDTO);
+    }
+
+    @Override
+    public ResponseEntity<?> getTweetsByUserHandle(String handle) {
         Optional<User> userOptional = userRepo.findByHandle(handle);
 
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
 
         User user = userOptional.get();
 
-        if (user != null) {
-            // Get all tweets associated with the user
-            return tweetRepo.findByUser(user);
-        } else {
-            // Handle the case where the user is not found
-            // You might want to return a 404 status code or handle it differently based on your requirements
-            return null;
+        List<Tweet> tweetList = tweetRepo.findByUser(user);
+
+        List<TweetDTO> tweetDTOList = tweetList.stream().map(tweetMapper::tweetToTweetDTO).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(tweetDTOList);
+
+    }
+
+
+    @Override
+    public ResponseEntity<?> getTweetsByTags(List<String> tags) {
+
+
+        Optional<List<Tweet>> optionalTweets = tweetRepo.findAllByTagsIn(tags);
+
+        if (optionalTweets.isPresent() && !optionalTweets.get().isEmpty()) {
+
+            List<TweetDTO> tweetDTOList = optionalTweets.get().stream().map(tweetMapper::tweetToTweetDTO).toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(tweetDTOList);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of("No matches found."));
         }
+
     }
 
     @Override
-    public List<Tweet> getTweetsByTags(List<String> tags) {
-        return tweetRepo.findAllByTagsIn(tags);
-    }
-
-    @Override
-    public Optional<Tweet> getTweetById(String tweetId) {
-        return tweetRepo.findById(UUID.fromString(tweetId));
-    }
-
-//    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-    // POST REQUESTS BELOW
-//    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    @Override
-    public void saveTweetReply(Tweet tweet, String handle, String parentTweetId) {
+    public ResponseEntity<?> saveTweet(TweetDTO tweetDTO, String handle, UUID parentTweetID) {
         Optional<User> userOptional = userRepo.findByHandle(handle);
 
-
-        User user = userOptional.get();
-
-
-        tweet.setParentTweet(tweetRepo.getReferenceById(UUID.fromString(parentTweetId)));
-
-
-        if (user != null) {
-            tweet.setUser(user);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User does not exist");
         }
 
-        tweetRepo.save(tweet);
+        Tweet tweetToBeCreated = tweetMapper.tweetDTOToTweet(tweetDTO);
+
+        tweetToBeCreated.setUser(userOptional.get());
+        tweetToBeCreated.setLikesCount(0);
+        tweetToBeCreated.setTweetStatus(true);
+        tweetToBeCreated.setRetweetCount(0);
+        if (parentTweetID != null && tweetRepo.findById(parentTweetID).isPresent()) {
+            tweetToBeCreated.setParentTweet(tweetRepo.findById(parentTweetID).get());
+        } else if (tweetRepo.findById(parentTweetID).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
+        }
+        tweetRepo.save(tweetToBeCreated);
+        return ResponseEntity.status(HttpStatus.OK).body("Tweet created");
+
     }
 
 
     @Override
-    public void saveTweet(Tweet tweet, String handle) {
-        Optional<User> userOptional = userRepo.findByHandle(handle);
+    public  ResponseEntity<?> deleteTweet(UUID tweetID) {
+        Optional<Tweet> optionalTweet =   tweetRepo.findById(tweetID);
 
+        if(optionalTweet.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found.");
 
-        User user = userOptional.get();
-
-        if (user != null) {
-            tweet.setUser(user);
-        } else {
-            throw new IllegalArgumentException("User does not exist!");
         }
-        tweetRepo.save(tweet);
+
+        tweetRepo.deleteById(tweetID);
+        return ResponseEntity.status(HttpStatus.OK).body("Tweet has been deleted");
     }
 
-    @Override
-    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet) {
 
-        if (Boolean.FALSE.equals(tweet.getTweetStatus())) {
+    @Override
+    public ResponseEntity<?> likesCounterTweet(UUID tweetID, String handle) {
+
+        Optional<Tweet> optionalTweet =   tweetRepo.findById(tweetID);
+
+        if(optionalTweet.isEmpty()){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
+        }
+        Tweet tweet = optionalTweet.get();
+
+        if(Boolean.FALSE.equals(tweet.getTweetStatus())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tweet is deactivated");
         }
 
-        Optional<User> optionalUser = userRepo.findByHandle(userThatLikedTweet);
+        Optional<User> optionalUser = userRepo.findByHandle(handle);
 
-        if(optionalUser.isEmpty()){
-             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        if (optionalUser.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         User user = optionalUser.get();
 
-        // Create a new UserLike entity
         UserLike userLike = new UserLike();
         userLike.setUser(user);
         userLike.setTweet(tweet);
 
-        // Save the UserLike entity
         userLikeRepo.save(userLike);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Tweet Liked");
+        return ResponseEntity.status(HttpStatus.OK).body("Your like has been sent");
 
     }
 
 
-//    @Override
-//    public ResponseEntity<String> likesCounterTweet(Tweet tweet, String userThatLikedTweet) {
-//        Integer likesCount = tweet.getLikesCount();
-//
-//        if (Boolean.FALSE.equals(tweet.getTweetActive())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tweet is deactivated");
-//        }
-//
-//        // Check if the user exists
-//        User user = userRepo.findByHandle(userThatLikedTweet);
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-//        }
-//
-//        try {
-//            tweet.getU
-//
-//
-//            List<UserTweetLike> userLikes = tweet.getUserLikes();
-//
-//            userLikes.add(userTweetLike);
-//            tweet.setUserLikes(userLikes);
-//
-//            // Update the likes count
-//            tweet.setLikesCount(likesCount + 1);
-//
-//            // Save the tweet, assuming you have a method like this
-//            this.saveTweet(tweet, tweet.getUser().getHandle());
-//
-//            return ResponseEntity.status(HttpStatus.OK).body("Tweet liked successfully");
-//        } catch (Exception e) {
-//            // Handle specific exceptions if needed
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-//        }
-//    }
-
     @Override
-    public ResponseEntity<String> statusUpdaterTweet(String tweetId) {
-        Optional<Tweet> optionalTweet = this.getTweetById(tweetId);
+    public ResponseEntity<?> statusUpdaterTweet(UUID tweetID) {
+        Optional<Tweet> optionalTweet = tweetRepo.findById(tweetID);
 
-        if (optionalTweet.isEmpty()) {
+        if(optionalTweet.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
         }
 
         Tweet tweet = optionalTweet.get();
         Boolean tweetCurrentStatus = tweet.getTweetStatus();
+
         tweet.setTweetStatus(!tweetCurrentStatus);
-        this.saveTweet(tweet, tweet.getUser().getHandle());
+        tweetRepo.save(tweet);
 
         if (Boolean.TRUE.equals(tweetCurrentStatus)) {
             return ResponseEntity.status(HttpStatus.OK).body("The tweet has been deactivated");
@@ -186,8 +179,5 @@ public class TweetDAO implements TweetStore {
         }
     }
 
-    @Override
-    public void deleteTweet(Optional<Tweet> tweet) {
-        tweetRepo.deleteTweetByTweetID(tweet.get().getTweetID());
-    }
+
 }
