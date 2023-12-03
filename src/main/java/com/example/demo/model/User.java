@@ -1,15 +1,14 @@
 package com.example.demo.model;
 
 
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,10 +19,11 @@ public class User {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    private UUID id;
+    @Column(name = "user_id")
+    private UUID userID;
 
 
-    @Column(name="handle",unique = true,nullable = false)
+    @Column(name = "handle", unique = true, nullable = false)
     private String handle;
 
     @Embedded
@@ -33,12 +33,17 @@ public class User {
     private List<Tweet> tweets;
 
     @CreationTimestamp
-    @Column(name="created_at", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private final Date createdAt = new Date();
 
     @UpdateTimestamp
-    @Column(name="last_modified_date")
+    @Column(name = "last_modified_date")
     private Date lastModifiedDate;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserLike> givenUserLikes;
+
+
 
     public Date getLastModifiedDate() {
         return lastModifiedDate;
@@ -68,12 +73,20 @@ public class User {
         this.handle = handle;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getUserID() {
+        return userID;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setUserID(UUID userID) {
+        this.userID = userID;
+    }
+
+    public Set<UserLike> getGivenUserLikes() {
+        return givenUserLikes;
+    }
+
+    public void setGivenUserLikes(Set<UserLike> givenUserLikes) {
+        this.givenUserLikes = givenUserLikes;
     }
 
     public PersonalInfo getPersonalInfo() {

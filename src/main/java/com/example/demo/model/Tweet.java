@@ -8,9 +8,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tweet", schema = "twt")
@@ -43,8 +41,8 @@ public class Tweet {
     @Column(name = "retweets_count", columnDefinition = "integer default 0")
     private Integer retweetCount = 0;
 
-    @Column(name = "is_active", columnDefinition = "boolean default true")
-    private Boolean isTweetActive = true;
+    @Column(name = "tweet_status", columnDefinition = "boolean default true")
+    private Boolean tweetStatus = true;
 
 
     @ManyToOne
@@ -58,19 +56,38 @@ public class Tweet {
 
 
     @CreationTimestamp
-    @Column(name="created_at", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private final Date createdAt = new Date();
 
-    public Boolean getTweetActive() {
-        return isTweetActive;
+    @OneToMany(mappedBy = "tweet")
+    private Set<UserLike> userLikes;
+
+    public Set<UserLike> getLikes() {
+        return userLikes;
     }
 
-    public void setTweetActive(Boolean tweetActive) {
-        isTweetActive = tweetActive;
+    public void setLikes(Set<UserLike> userLikes) {
+        this.userLikes = userLikes;
+    }
+
+    public Boolean getTweetStatus() {
+        return tweetStatus;
+    }
+
+    public void setTweetStatus(Boolean tweetStatus) {
+        this.tweetStatus = tweetStatus;
     }
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public Set<UserLike> getUserLikes() {
+        return userLikes;
+    }
+
+    public void setUserLikes(Set<UserLike> userLikes) {
+        this.userLikes = userLikes;
     }
 
     public UUID getTweetID() {
@@ -120,7 +137,6 @@ public class Tweet {
     public void setRetweetCount(Integer retweetCount) {
         this.retweetCount = retweetCount;
     }
-
 
 
     public Tweet getParentTweet() {
