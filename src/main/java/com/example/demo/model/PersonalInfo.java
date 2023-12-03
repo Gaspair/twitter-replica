@@ -21,7 +21,7 @@ public class PersonalInfo {
     private String lastName;
 
     @Column(name = "married")
-    private boolean married;
+    private Boolean married;
 
     @Column(name="email")
     private String email;
@@ -29,7 +29,7 @@ public class PersonalInfo {
     public PersonalInfo() {
     }
 
-    public PersonalInfo(String firstName, String lastName, boolean married, String email) {
+    public PersonalInfo(String firstName, String lastName, Boolean married, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.married = married;
@@ -52,7 +52,7 @@ public class PersonalInfo {
         this.lastName = lastName;
     }
 
-    public boolean isMarried() {
+    public Boolean isMarried() {
         return married;
     }
 

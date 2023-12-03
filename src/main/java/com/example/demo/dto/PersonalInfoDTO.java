@@ -4,13 +4,19 @@ public class PersonalInfoDTO {
 
     private String firstName;
     private String lastName;
-    private boolean married;
+    private Boolean married;
     private String email;
+
 
     public PersonalInfoDTO() {
     }
 
-
+    public PersonalInfoDTO(String firstName, String lastName, boolean married, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.married = married;
+        this.email = email;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -28,7 +34,7 @@ public class PersonalInfoDTO {
         this.lastName = lastName;
     }
 
-    public boolean isMarried() {
+    public Boolean isMarried() {
         return married;
     }
 

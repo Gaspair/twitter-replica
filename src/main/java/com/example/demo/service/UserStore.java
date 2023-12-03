@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PersonalInfoDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.model.User;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public interface UserStore {
 
     ResponseEntity<?> deleteUser(UUID id);
 
+    ResponseEntity<?> updateUser(UUID userID, PersonalInfoDTO personalInfoDTO);
 
-//    void updateUser(User user);
 
-
+    ResponseEntity<?> getUserPersonalInfo(UUID userID);
 }

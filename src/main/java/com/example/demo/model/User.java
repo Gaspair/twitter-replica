@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -42,7 +43,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<UserLike> givenUserLikes;
-
 
 
     public Date getLastModifiedDate() {

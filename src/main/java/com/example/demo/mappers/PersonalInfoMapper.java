@@ -13,6 +13,7 @@ public interface PersonalInfoMapper {
 
     PersonalInfoMapper INSTANCE = Mappers.getMapper( PersonalInfoMapper.class );
 
+
     @Mapping(target = "firstName", source = "personalInfo.firstName")
     @Mapping(target = "lastName", source = "personalInfo.lastName")
     @Mapping(target = "married", source = "personalInfo.married")
@@ -24,4 +25,22 @@ public interface PersonalInfoMapper {
     @Mapping(target = "married", source = "personalInfoDTO.married")
     @Mapping(target = "email", source = "personalInfoDTO.email")
     PersonalInfo personalInfoDTOToPersonalInfo(PersonalInfoDTO personalInfoDTO);
+
+
+    default PersonalInfo updatePersonalInfoFromDTO(PersonalInfo existing, PersonalInfoDTO dto) {
+        if (dto.getFirstName() != null) {
+            existing.setFirstName(dto.getFirstName());
+        }
+        if (dto.getLastName() != null) {
+            existing.setLastName(dto.getLastName());
+        }if (dto.isMarried() != null) {
+            // Only update if the value is not null
+            existing.setMarried(dto.isMarried());
+        }
+        if (dto.getEmail() != null) {
+            existing.setEmail(dto.getEmail());
+        }
+        return existing;
+    }
+
 }
