@@ -61,6 +61,11 @@ public class TweetController {
     public ResponseEntity<?> tweetStatusUpdater(@PathVariable UUID tweetID) {
         return tweetService.statusUpdaterTweet(tweetID);
     }
+
+    @GetMapping("/likes/{tweetID}")
+    public ResponseEntity<?> tweetLikes(@PathVariable UUID tweetID){
+        return tweetService.getTweetLikes(tweetID);
+    }
 }
 
 
