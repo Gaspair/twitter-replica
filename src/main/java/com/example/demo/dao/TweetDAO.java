@@ -101,20 +101,27 @@ public class TweetDAO implements TweetStore {
         }
 
         Tweet tweetToBeCreated = tweetMapper.tweetDTOToTweet(tweetDTO);
-
         tweetToBeCreated.setUser(userOptional.get());
         tweetToBeCreated.setLikesCount(0);
         tweetToBeCreated.setTweetStatus(true);
         tweetToBeCreated.setRetweetCount(0);
-        if (parentTweetID != null && tweetRepo.findById(parentTweetID).isPresent()) {
-            tweetToBeCreated.setParentTweet(tweetRepo.findById(parentTweetID).get());
-        } else if (tweetRepo.findById(parentTweetID).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
+
+        if (parentTweetID != null) {
+            Optional<Tweet> parentTweetOptional = tweetRepo.findById(parentTweetID);
+            if (parentTweetOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parent tweet does not exist");
+            }
+
+            Tweet parentTweet = parentTweetOptional.get();
+            tweetToBeCreated.setParentTweet(parentTweet);
+        } else {
+           tweetRepo.save(tweetToBeCreated);
         }
+
         tweetRepo.save(tweetToBeCreated);
         return ResponseEntity.status(HttpStatus.OK).body("Tweet created");
-
     }
+
 
 
     @Override
@@ -156,6 +163,9 @@ public class TweetDAO implements TweetStore {
         UserLike userLike = new UserLike();
         userLike.setUser(user);
         userLike.setTweet(tweet);
+
+        tweet.setLikesCount(tweet.getLikesCount() + 1);
+        tweetRepo.save(tweet);
 
         userLikeRepo.save(userLike);
 

@@ -6,6 +6,7 @@ import com.example.demo.mappers.PersonalInfoMapper;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.User;
+import com.example.demo.repository.UserLikeRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.UserStore;
 import jakarta.transaction.Transactional;
@@ -26,15 +27,16 @@ public class UserDAO implements UserStore {
 
     private UserRepo userRepo;
     private UserMapper userMapper;
+    private UserLikeRepo userLikeRepo;
     private final PersonalInfoMapper personalInfoMapper;
 
 
     @Autowired
-    public UserDAO(UserRepo userRepo,UserMapper userMapper,
-                   PersonalInfoMapper personalInfoMapper) {
+    public UserDAO(UserRepo userRepo, UserMapper userMapper,
+                   PersonalInfoMapper personalInfoMapper,UserLikeRepo userLikeRepo) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
-
+        this.userLikeRepo = userLikeRepo;
         this.personalInfoMapper = personalInfoMapper;
     }
 
@@ -52,6 +54,23 @@ public class UserDAO implements UserStore {
 
         return ResponseEntity.status(HttpStatus.OK).body(userDTO);
     }
+    @Override
+    public ResponseEntity<?> getUserPersonalInfo(UUID userID) {
+        Optional<User> userOptional = userRepo.findById(userID);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = userOptional.get();
+
+        PersonalInfo personalInfo = user.getPersonalInfo();
+        PersonalInfoDTO personalInfoDTO = personalInfoMapper.personalInfoToPersonalInfoDTO(personalInfo);
+
+        return ResponseEntity.status(HttpStatus.OK).body(personalInfoDTO);
+    }
+
+
 
     @Override
     public ResponseEntity<?> getOneUserByHandle(String handle) {
@@ -66,7 +85,6 @@ public class UserDAO implements UserStore {
         return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 
     }
-
 
 
     @Override
@@ -87,10 +105,23 @@ public class UserDAO implements UserStore {
 
 
     @Override
+    public ResponseEntity<?> getLikesList(UUID userID) {
+        Optional<User> optionalUser = userRepo.findById(userID);
+
+        if(optionalUser.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        User user = optionalUser.get();
+//FOLOSESTETE DE DTO
+        userLikeRepo.findUserLikeByUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(userLikeRepo.findUserLikeByUser(user).get());
+    }
+
+    @Override
     public ResponseEntity<?> saveUser(UserDTO userDTO) {
         Optional<User> handleVerify = userRepo.findByHandle(userDTO.getHandle());
 
-        if(handleVerify.isPresent()){
+        if (handleVerify.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Handle in use already");
         }
         User userToBeSaved = userMapper.userDTOtoUser(userDTO);
@@ -129,14 +160,9 @@ public class UserDAO implements UserStore {
         User userToBeSaved = userOptional.get();
         PersonalInfo existingPersonalInfo = userToBeSaved.getPersonalInfo();
 
-        if (existingPersonalInfo == null) {
-            // If there is no existing personal info, create a new one
-            userToBeSaved.setPersonalInfo(personalInfoMapper.personalInfoDTOToPersonalInfo(personalInfoDTO));
-        } else {
-            // Update only the specified fields
-            PersonalInfo updatedPersonalInfo = personalInfoMapper.updatePersonalInfoFromDTO(existingPersonalInfo, personalInfoDTO);
-            userToBeSaved.setPersonalInfo(updatedPersonalInfo);
-        }
+
+        PersonalInfo updatedPersonalInfo = personalInfoMapper.updatePersonalInfoFromDTO(existingPersonalInfo, personalInfoDTO);
+        userToBeSaved.setPersonalInfo(updatedPersonalInfo);
 
         userRepo.save(userToBeSaved);
 
@@ -144,20 +170,6 @@ public class UserDAO implements UserStore {
     }
 
 
-    @Override
-    public ResponseEntity<?> getUserPersonalInfo(UUID userID) {
-        Optional<User> userOptional = userRepo.findById(userID);
 
-        if(userOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-
-        User user = userOptional.get();
-
-        PersonalInfo personalInfo = user.getPersonalInfo();
-        PersonalInfoDTO personalInfoDTO = personalInfoMapper.personalInfoToPersonalInfoDTO(personalInfo);
-
-        return ResponseEntity.status(HttpStatus.OK).body(personalInfoDTO);
-    }
 
 }

@@ -45,4 +45,8 @@ public class UserService {
     public ResponseEntity<?> getUserPersonalInfo(UUID userID) {
         return store.getUserPersonalInfo(userID);
     }
+
+    public ResponseEntity<?> getLikesList(UUID userID) {
+        return store.getLikesList(userID);
+    }
 }

@@ -25,4 +25,6 @@ public interface UserStore {
 
 
     ResponseEntity<?> getUserPersonalInfo(UUID userID);
+
+    ResponseEntity<?> getLikesList(UUID userID);
 }
