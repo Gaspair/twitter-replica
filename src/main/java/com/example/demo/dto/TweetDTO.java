@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class TweetDTO {
@@ -13,18 +12,6 @@ public class TweetDTO {
     private Integer retweetCount;
     private Boolean tweetStatus;
     private Date createdAt;
-    private UUID parentTweetID;
-
-    private Set<UserLikeDTO> userLikes;
-
-
-    public Set<UserLikeDTO> getUserLikes() {
-        return userLikes;
-    }
-
-    public void setUserLikes(Set<UserLikeDTO> userLikes) {
-        this.userLikes = userLikes;
-    }
 
     public UUID getTweetID() {
         return tweetID;
@@ -82,11 +69,5 @@ public class TweetDTO {
         this.createdAt = createdAt;
     }
 
-    public UUID getParentTweetID() {
-        return parentTweetID;
-    }
 
-    public void setParentTweetID(UUID parentTweetID) {
-        this.parentTweetID = parentTweetID;
-    }
 }
