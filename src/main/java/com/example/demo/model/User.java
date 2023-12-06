@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +14,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "user", schema = "usr")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
 
@@ -35,7 +39,7 @@ public class User {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private final Date createdAt = new Date();
+    private Date createdAt;
 
     @UpdateTimestamp
     @Column(name = "last_modified_date")
@@ -44,57 +48,5 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<UserLike> givenUserLikes;
 
-
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<Tweet> getTweets() {
-        return tweets;
-    }
-
-    public void setTweets(List<Tweet> tweets) {
-        this.tweets = tweets;
-    }
-
-    public String getHandle() {
-        return handle;
-    }
-
-    public void setHandle(String handle) {
-        this.handle = handle;
-    }
-
-    public UUID getUserID() {
-        return userID;
-    }
-
-    public void setUserID(UUID userID) {
-        this.userID = userID;
-    }
-
-    public Set<UserLike> getGivenUserLikes() {
-        return givenUserLikes;
-    }
-
-    public void setGivenUserLikes(Set<UserLike> givenUserLikes) {
-        this.givenUserLikes = givenUserLikes;
-    }
-
-    public PersonalInfo getPersonalInfo() {
-        return personalInfo;
-    }
-
-    public void setPersonalInfo(PersonalInfo personalInfo) {
-        this.personalInfo = personalInfo;
-    }
 
 }
