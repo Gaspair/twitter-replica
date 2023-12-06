@@ -51,4 +51,7 @@ public class TweetService {
         return tweetStore.saveTweet(tweetDTO, handle, parentTweetID);
     }
 
+    public ResponseEntity<?> getTweetLikes(UUID tweetID) {
+        return tweetStore.getTweetLikes(tweetID);
+    }
 }

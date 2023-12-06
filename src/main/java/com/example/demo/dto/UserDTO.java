@@ -17,7 +17,7 @@ public class UserDTO {
     private Date createdAt;
     @JsonIgnore
     private Date lastModifiedDate;
-    @JsonIgnore
+
     private PersonalInfoDTO personalInfoDTO;
     private List<TweetDTO> tweets;
 

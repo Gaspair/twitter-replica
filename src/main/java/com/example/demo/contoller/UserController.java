@@ -1,5 +1,6 @@
 package com.example.demo.contoller;
 
+import com.example.demo.dto.PersonalInfoDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +36,29 @@ public class UserController {
         return service.getUsersByHandle(handle, limit);
     }
 
+    @GetMapping("/personalInfo/{userID}")
+    public ResponseEntity<?> getUsersPersonalInfo(@PathVariable("userID") UUID userID) {
+        return service.getUserPersonalInfo(userID);
+    }
+
+    @GetMapping("/likeList/{userID}")
+    public ResponseEntity<?> getLikesList(@PathVariable("userID") UUID userID) {
+        return service.getLikesList(userID);
+    }
 
     @PostMapping("")
     public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
         return service.saveUser(userDTO);
     }
 
+    @PatchMapping("/updateUser/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") UUID userID,@RequestBody PersonalInfoDTO personalInfoDTO) {
+        return service.updateUser(userID,personalInfoDTO);
+
+    }
 
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") UUID userID) {
-
         return service.deleteUser(userID);
-
     }
 }

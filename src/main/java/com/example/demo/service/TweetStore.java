@@ -27,4 +27,5 @@ public interface TweetStore {
     ResponseEntity<?> statusUpdaterTweet(UUID tweetID);
 
 
+    ResponseEntity<?> getTweetLikes(UUID tweetID);
 }

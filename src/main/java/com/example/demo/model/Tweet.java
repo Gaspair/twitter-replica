@@ -62,11 +62,11 @@ public class Tweet {
     @OneToMany(mappedBy = "tweet")
     private Set<UserLike> userLikes;
 
-    public Set<UserLike> getLikes() {
+    public Set<UserLike> getUserLikes() {
         return userLikes;
     }
 
-    public void setLikes(Set<UserLike> userLikes) {
+    public void setUserLikes(Set<UserLike> userLikes) {
         this.userLikes = userLikes;
     }
 
@@ -82,13 +82,7 @@ public class Tweet {
         return createdAt;
     }
 
-    public Set<UserLike> getUserLikes() {
-        return userLikes;
-    }
 
-    public void setUserLikes(Set<UserLike> userLikes) {
-        this.userLikes = userLikes;
-    }
 
     public UUID getTweetID() {
         return tweetID;

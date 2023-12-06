@@ -4,7 +4,7 @@ import com.example.demo.dto.TweetDTO;
 import com.example.demo.model.Tweet;
 import com.example.demo.service.TweetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +60,11 @@ public class TweetController {
     @PatchMapping("/changeStatus/{tweetID}")
     public ResponseEntity<?> tweetStatusUpdater(@PathVariable UUID tweetID) {
         return tweetService.statusUpdaterTweet(tweetID);
+    }
+
+    @GetMapping("/likes/{tweetID}")
+    public ResponseEntity<?> tweetLikes(@PathVariable UUID tweetID){
+        return tweetService.getTweetLikes(tweetID);
     }
 }
 

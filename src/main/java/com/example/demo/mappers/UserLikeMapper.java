@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+
+@Mapper(componentModel = "spring",uses = {UserMapper.class, TweetMapper.class})
 public interface UserLikeMapper {
     UserLikeMapper INSTANCE = Mappers.getMapper( UserLikeMapper.class );
     @Mapping(source = "userLike.likeID", target = "likeID")
