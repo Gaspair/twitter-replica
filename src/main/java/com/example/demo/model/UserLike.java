@@ -1,9 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
@@ -11,6 +10,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "userLike", schema = "like_list")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLike {
 
     @Id
@@ -27,43 +31,10 @@ public class UserLike {
     @JoinColumn(name = "tweet_id")
     private Tweet tweet;
 
+    @CreationTimestamp
     @Column(name = "like_timestamp")
     private LocalDateTime likeTimestamp;
 
-    public UserLike() {
-        this.likeTimestamp = LocalDateTime.now();
-    }
 
 
-    public UUID getLikeID() {
-        return likeID;
-    }
-
-    public void setLikeID(UUID likeID) {
-        this.likeID = likeID;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Tweet getTweet() {
-        return tweet;
-    }
-
-    public void setTweet(Tweet tweet) {
-        this.tweet = tweet;
-    }
-
-    public LocalDateTime getLikeTimestamp() {
-        return likeTimestamp;
-    }
-
-    public void setLikeTimestamp(LocalDateTime likeTimestamp) {
-        this.likeTimestamp = likeTimestamp;
-    }
 }
