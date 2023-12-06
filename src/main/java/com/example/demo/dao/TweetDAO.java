@@ -115,13 +115,12 @@ public class TweetDAO implements TweetStore {
             Tweet parentTweet = parentTweetOptional.get();
             tweetToBeCreated.setParentTweet(parentTweet);
         } else {
-           tweetRepo.save(tweetToBeCreated);
+            tweetRepo.save(tweetToBeCreated);
         }
 
         tweetRepo.save(tweetToBeCreated);
         return ResponseEntity.status(HttpStatus.OK).body("Tweet created");
     }
-
 
 
     @Override
@@ -160,6 +159,18 @@ public class TweetDAO implements TweetStore {
 
         User user = optionalUser.get();
 
+
+
+        Optional<UserLike> optionalUserLike = userLikeRepo.findUserLikeByUserAndTweet(user, tweet);
+
+        if(optionalUserLike.isPresent()){
+
+            userLikeRepo.delete(optionalUserLike.get());
+            tweet.setLikesCount(tweet.getLikesCount() - 1);
+            return ResponseEntity.status(HttpStatus.OK).body("Tweet disliked");
+        }
+
+
         UserLike userLike = new UserLike();
         userLike.setUser(user);
         userLike.setTweet(tweet);
@@ -169,7 +180,7 @@ public class TweetDAO implements TweetStore {
 
         userLikeRepo.save(userLike);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Your like has been sent");
+        return ResponseEntity.status(HttpStatus.OK).body("Tweet liked");
 
     }
 

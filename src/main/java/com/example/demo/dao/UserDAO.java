@@ -2,10 +2,13 @@ package com.example.demo.dao;
 
 import com.example.demo.dto.PersonalInfoDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserLikeDTO;
 import com.example.demo.mappers.PersonalInfoMapper;
+import com.example.demo.mappers.UserLikeMapper;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.User;
+import com.example.demo.model.UserLike;
 import com.example.demo.repository.UserLikeRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.UserStore;
@@ -29,15 +32,18 @@ public class UserDAO implements UserStore {
     private UserMapper userMapper;
     private UserLikeRepo userLikeRepo;
     private final PersonalInfoMapper personalInfoMapper;
+    private final UserLikeMapper userLikeMapper;
 
 
     @Autowired
     public UserDAO(UserRepo userRepo, UserMapper userMapper,
-                   PersonalInfoMapper personalInfoMapper,UserLikeRepo userLikeRepo) {
+                   PersonalInfoMapper personalInfoMapper, UserLikeRepo userLikeRepo,
+                   UserLikeMapper userLikeMapper) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
         this.userLikeRepo = userLikeRepo;
         this.personalInfoMapper = personalInfoMapper;
+        this.userLikeMapper = userLikeMapper;
     }
 
     @Override
@@ -54,6 +60,7 @@ public class UserDAO implements UserStore {
 
         return ResponseEntity.status(HttpStatus.OK).body(userDTO);
     }
+
     @Override
     public ResponseEntity<?> getUserPersonalInfo(UUID userID) {
         Optional<User> userOptional = userRepo.findById(userID);
@@ -69,7 +76,6 @@ public class UserDAO implements UserStore {
 
         return ResponseEntity.status(HttpStatus.OK).body(personalInfoDTO);
     }
-
 
 
     @Override
@@ -108,13 +114,19 @@ public class UserDAO implements UserStore {
     public ResponseEntity<?> getLikesList(UUID userID) {
         Optional<User> optionalUser = userRepo.findById(userID);
 
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         User user = optionalUser.get();
-//FOLOSESTETE DE DTO
-        userLikeRepo.findUserLikeByUser(user);
-        return ResponseEntity.status(HttpStatus.OK).body(userLikeRepo.findUserLikeByUser(user).get());
+
+        Optional<List<UserLike>> optionalUserLikes = userLikeRepo.findUserLikeByUser(user);
+
+        List<UserLike> userLikeList= optionalUserLikes.get();
+
+
+        List<UserLikeDTO> userLikeDTOList = userLikeList.stream().map(userLikeMapper::userLikeToUserLikeDTO).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(userLikeDTOList);
     }
 
     @Override
@@ -168,8 +180,6 @@ public class UserDAO implements UserStore {
 
         return ResponseEntity.status(HttpStatus.OK).body("Personal information updated");
     }
-
-
 
 
 }
