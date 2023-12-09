@@ -79,15 +79,15 @@ public class TweetDAO implements TweetStore {
     public ResponseEntity<?> getTweetsByTags(List<String> tags) {
 
 
-        Optional<List<Tweet>> optionalTweets = tweetRepo.findAllByTagsIn(tags);
+        List<Tweet> tweetList = tweetRepo.findAllByTagsIn(tags);
 
-        if (optionalTweets.isPresent() && !optionalTweets.get().isEmpty()) {
+        if (!tweetList.isEmpty()) {
 
-            List<TweetDTO> tweetDTOList = optionalTweets.get().stream().map(tweetMapper::tweetToTweetDTO).toList();
+            List<TweetDTO> tweetDTOList = tweetList.stream().map(tweetMapper::tweetToTweetDTO).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(tweetDTOList);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of("No matches found."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(tweetList);
         }
 
     }

@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserLikeRepo extends JpaRepository<UserLike, UUID> {
-   Optional<List<UserLike>> findUserLikeByUser(User user);
+   List<UserLike> findUserLikeByUser(User user);
 
 
    Optional<UserLike> findUserLikeByUserAndTweet(User user, Tweet tweet);

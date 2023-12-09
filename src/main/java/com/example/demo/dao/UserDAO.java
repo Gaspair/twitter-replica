@@ -95,9 +95,8 @@ public class UserDAO implements UserStore {
 
     @Override
     public ResponseEntity getUsersByHandle(String handle, int limit) {
-        Optional<List<User>> userOptionalList = userRepo.findByHandleContaining(handle);
-        if (userOptionalList.isPresent() && !userOptionalList.get().isEmpty()) {
-            List<User> userList = userOptionalList.get();
+        List<User> userList = userRepo.findByHandleContaining(handle);
+        if (!userList.isEmpty() ) {
             List<UserDTO> userListDTO = userList.stream()
                     .map(userMapper::userToUserDTO)
                     .limit(limit)
@@ -119,10 +118,7 @@ public class UserDAO implements UserStore {
         }
         User user = optionalUser.get();
 
-        Optional<List<UserLike>> optionalUserLikes = userLikeRepo.findUserLikeByUser(user);
-
-        List<UserLike> userLikeList= optionalUserLikes.get();
-
+        List<UserLike> userLikeList = userLikeRepo.findUserLikeByUser(user);
 
         List<UserLikeDTO> userLikeDTOList = userLikeList.stream().map(userLikeMapper::userLikeToUserLikeDTO).toList();
 
