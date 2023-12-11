@@ -8,9 +8,9 @@ import com.example.demo.mappers.UserLikeMapper;
 import com.example.demo.model.Tweet;
 import com.example.demo.model.User;
 import com.example.demo.model.UserLike;
-import com.example.demo.repository.UserLikeRepo;
-import com.example.demo.repository.TweetRepo;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.repository.UserLikeRepository;
+import com.example.demo.repository.TweetRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TweetStore;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.management.modelmbean.InvalidTargetObjectTypeException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,18 +27,18 @@ import java.util.UUID;
 @Component
 @Transactional
 public class TweetDAO implements TweetStore {
-    private TweetRepo tweetRepo;
-    private UserRepo userRepo;
-    private UserLikeRepo userLikeRepo;
+    private TweetRepository tweetRepo;
+    private UserRepository userRepo;
+    private UserLikeRepository userLikeRepository;
     private TweetMapper tweetMapper;
 
     private UserLikeMapper userLikeMapper;
 
     @Autowired
-    public TweetDAO(TweetRepo tweetRepo, UserRepo userRepo, UserLikeRepo userLikeRepo, TweetMapper tweetMapper, UserLikeMapper userLikeMapper) {
+    public TweetDAO(TweetRepository tweetRepo, UserRepository userRepo, UserLikeRepository userLikeRepository, TweetMapper tweetMapper, UserLikeMapper userLikeMapper) {
         this.tweetRepo = tweetRepo;
         this.userRepo = userRepo;
-        this.userLikeRepo = userLikeRepo;
+        this.userLikeRepository = userLikeRepository;
         this.tweetMapper = tweetMapper;
         this.userLikeMapper = userLikeMapper;
     }
@@ -162,11 +161,11 @@ public class TweetDAO implements TweetStore {
 
 
 
-        Optional<UserLike> optionalUserLike = userLikeRepo.findUserLikeByUserAndTweet(user, tweet);
+        Optional<UserLike> optionalUserLike = userLikeRepository.findUserLikeByUserAndTweet(user, tweet);
 
         if(optionalUserLike.isPresent()){
 
-            userLikeRepo.delete(optionalUserLike.get());
+            userLikeRepository.delete(optionalUserLike.get());
             tweet.setLikesCount(tweet.getLikesCount() - 1);
             return ResponseEntity.status(HttpStatus.OK).body("Tweet disliked");
         }
@@ -179,7 +178,7 @@ public class TweetDAO implements TweetStore {
         tweet.setLikesCount(tweet.getLikesCount() + 1);
         tweetRepo.save(tweet);
 
-        userLikeRepo.save(userLike);
+        userLikeRepository.save(userLike);
 
         return ResponseEntity.status(HttpStatus.OK).body("Tweet liked");
 

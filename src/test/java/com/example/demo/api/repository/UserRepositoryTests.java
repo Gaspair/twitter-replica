@@ -2,7 +2,7 @@ package com.example.demo.api.repository;
 
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class UserRepositoryTests {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Test
     @DirtiesContext

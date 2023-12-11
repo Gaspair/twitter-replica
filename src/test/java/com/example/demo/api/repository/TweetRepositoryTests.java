@@ -3,8 +3,8 @@ package com.example.demo.api.repository;
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.Tweet;
 import com.example.demo.model.User;
-import com.example.demo.repository.TweetRepo;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.repository.TweetRepository;
+import com.example.demo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,10 +22,10 @@ import java.util.Optional;
 public class TweetRepositoryTests {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    private TweetRepo tweetRepo;
+    private TweetRepository tweetRepo;
 
 
     @Test

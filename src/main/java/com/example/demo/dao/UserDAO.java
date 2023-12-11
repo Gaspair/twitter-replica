@@ -9,8 +9,8 @@ import com.example.demo.mappers.UserMapper;
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.User;
 import com.example.demo.model.UserLike;
-import com.example.demo.repository.UserLikeRepo;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.repository.UserLikeRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserStore;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +18,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional
 public class UserDAO implements UserStore {
 
-    private UserRepo userRepo;
+    private UserRepository userRepo;
     private UserMapper userMapper;
-    private UserLikeRepo userLikeRepo;
+    private UserLikeRepository userLikeRepository;
     private final PersonalInfoMapper personalInfoMapper;
     private final UserLikeMapper userLikeMapper;
 
 
     @Autowired
-    public UserDAO(UserRepo userRepo, UserMapper userMapper,
-                   PersonalInfoMapper personalInfoMapper, UserLikeRepo userLikeRepo,
+    public UserDAO(UserRepository userRepo, UserMapper userMapper,
+                   PersonalInfoMapper personalInfoMapper, UserLikeRepository userLikeRepository,
                    UserLikeMapper userLikeMapper) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
-        this.userLikeRepo = userLikeRepo;
+        this.userLikeRepository = userLikeRepository;
         this.personalInfoMapper = personalInfoMapper;
         this.userLikeMapper = userLikeMapper;
     }
@@ -118,7 +116,7 @@ public class UserDAO implements UserStore {
         }
         User user = optionalUser.get();
 
-        List<UserLike> userLikeList = userLikeRepo.findUserLikeByUser(user);
+        List<UserLike> userLikeList = userLikeRepository.findUserLikeByUser(user);
 
         List<UserLikeDTO> userLikeDTOList = userLikeList.stream().map(userLikeMapper::userLikeToUserLikeDTO).toList();
 

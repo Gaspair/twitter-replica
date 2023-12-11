@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserLikeRepo extends JpaRepository<UserLike, UUID> {
+public interface UserLikeRepository extends JpaRepository<UserLike, UUID> {
    List<UserLike> findUserLikeByUser(User user);
 
 
