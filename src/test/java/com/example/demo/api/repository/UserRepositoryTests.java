@@ -2,7 +2,7 @@ package com.example.demo.api.repository;
 
 import com.example.demo.model.PersonalInfo;
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class UserRepositoryTests {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Test
     @DirtiesContext
@@ -107,4 +107,68 @@ public class UserRepositoryTests {
 
         Assertions.assertThat(userList).isNotNull().hasSize(2);
     }
+    @Test
+    @DirtiesContext
+    public void UserRepository_GetOneByHandle_ReturnMoreThanOneUser() {
+//Arrange
+
+        PersonalInfo personalInfo1 = PersonalInfo.builder()
+                .email("Testing1@yahoo.com")
+                .married(true)
+                .firstName("Cherescu1")
+                .lastName("Parosu1").build();
+        User user1 = User.builder()
+                .handle("NewUser1")
+                .personalInfo(personalInfo1)
+                .build();
+
+        // Act
+
+        User savedUser1 = userRepo.save(user1);
+
+        // Assertions
+        Optional<User> optionalUser = userRepo.findByHandle(savedUser1.getHandle());
+
+        User savedUser = optionalUser.get();
+
+
+        Assertions.assertThat(savedUser).isNotNull();
+
+    }
+
+    @Test
+
+    public void shouldDeleteUserByHandle() {
+        // Arrange
+        PersonalInfo personalInfo = PersonalInfo.builder()
+                .email("Testing@yahoo.com")
+                .married(true)
+                .firstName("Cherescu")
+                .lastName("Parosu")
+                .build();
+        User user = User.builder()
+                .handle("NewUser")
+                .personalInfo(personalInfo)
+                .build();
+
+        // Act
+        User savedUser = userRepo.save(user);
+
+        // Assert
+        Optional<User> optionalUser = userRepo.findByHandle(savedUser.getHandle());
+        User retrievedUser = optionalUser.orElse(null);
+
+        Assertions.assertThat(retrievedUser).isNotNull();
+
+        // Act
+        userRepo.delete(retrievedUser);
+
+        // Assert
+        Optional<User> deletedUser = userRepo.findByHandle(savedUser.getHandle());
+
+        Assertions.assertThat(deletedUser).isEmpty();
+    }
+
+
+
 }
