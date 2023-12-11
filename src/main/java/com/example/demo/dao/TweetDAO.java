@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.management.modelmbean.InvalidTargetObjectTypeException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -119,7 +120,7 @@ public class TweetDAO implements TweetStore {
         }
 
         tweetRepo.save(tweetToBeCreated);
-        return ResponseEntity.status(HttpStatus.OK).body("Tweet created");
+        return ResponseEntity.status(HttpStatus.OK).body(tweetToBeCreated);
     }
 
 
@@ -210,23 +211,21 @@ public class TweetDAO implements TweetStore {
     public ResponseEntity<?> getTweetLikes(UUID tweetID) {
         Optional<Tweet> optionalTweet = tweetRepo.findById(tweetID);
 
+
+//        Optional.of(tweetRepo.findById(tweetID)).orElseThrow(InvalidTargetObjectTypeException::new);
+
+
         if (optionalTweet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
-        }
+        }else{
+            Tweet tweet = optionalTweet.get();
 
-        Tweet tweet = optionalTweet.get();
-
-        Set<UserLike> tweetLikes = tweet.getUserLikes();
-
-        if (!tweetLikes.isEmpty()) {
-
+            Set<UserLike> tweetLikes = tweet.getUserLikes();
             List<UserLikeDTO> tweetDTOList = tweetLikes.stream().map(userLikeMapper::userLikeToUserLikeDTO).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(tweetDTOList);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of("No likes yet"));
-        }
 
+        }
     }
 
 

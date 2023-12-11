@@ -4,6 +4,7 @@ import com.example.demo.dto.TweetDTO;
 import com.example.demo.model.Tweet;
 import org.springframework.http.ResponseEntity;
 
+import javax.management.modelmbean.InvalidTargetObjectTypeException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
