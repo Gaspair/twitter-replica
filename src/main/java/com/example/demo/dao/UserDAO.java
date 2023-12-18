@@ -138,7 +138,7 @@ public class UserDAO implements UserStore {
         }
         userToBeSaved.setPersonalInfo(personalInfoMapper.personalInfoDTOToPersonalInfo(personalInfoDTO));
         userRepo.save(userToBeSaved);
-        return ResponseEntity.status(HttpStatus.OK).body("User has been created");
+        return ResponseEntity.status(HttpStatus.OK).body(userMapper.userToUserDTO(userToBeSaved));
     }
 
 

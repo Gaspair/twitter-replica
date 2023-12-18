@@ -210,10 +210,6 @@ public class TweetDAO implements TweetStore {
     public ResponseEntity<?> getTweetLikes(UUID tweetID) {
         Optional<Tweet> optionalTweet = tweetRepo.findById(tweetID);
 
-
-//        Optional.of(tweetRepo.findById(tweetID)).orElseThrow(InvalidTargetObjectTypeException::new);
-
-
         if (optionalTweet.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tweet not found");
         }else{
