@@ -33,9 +33,9 @@ public interface PersonalInfoMapper {
         }
         if (dto.getLastName() != null) {
             existing.setLastName(dto.getLastName());
-        }if (dto.isMarried() != null) {
+        }if (dto.getMarried() != null) {
             // Only update if the value is not null
-            existing.setMarried(dto.isMarried());
+            existing.setMarried(dto.getMarried());
         }
         if (dto.getEmail() != null) {
             existing.setEmail(dto.getEmail());

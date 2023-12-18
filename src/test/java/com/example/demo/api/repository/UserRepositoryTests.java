@@ -30,10 +30,10 @@ public class UserRepositoryTests {
         PersonalInfo personalInfo = PersonalInfo.builder()
                 .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu")
-                .lastName("Parosu").build();
+                .firstName("Ned")
+                .lastName("Stark").build();
         User user = User.builder()
-                .handle("NewUser")
+                .handle("TheWinterIsComing")
                 .personalInfo(personalInfo)
                 .build();
 
@@ -49,19 +49,19 @@ public class UserRepositoryTests {
     public void UserRepository_GetOneByID_ReturnMoreThanOneUser() {
 //Arrange
 
-        PersonalInfo personalInfo1 = PersonalInfo.builder()
-                .email("Testing1@yahoo.com")
+        PersonalInfo personalInfo = PersonalInfo.builder()
+                .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu1")
-                .lastName("Parosu1").build();
-        User user1 = User.builder()
-                .handle("NewUser1")
-                .personalInfo(personalInfo1)
+                .firstName("Ned")
+                .lastName("Stark").build();
+        User user = User.builder()
+                .handle("TheWinterIsComing")
+                .personalInfo(personalInfo)
                 .build();
 
         // Act
 
-        User savedUser1 = userRepo.save(user1);
+        User savedUser1 = userRepo.save(user);
 
         // Assertions
         Optional<User> optionalUser = userRepo.findById(savedUser1.getUserID());
@@ -80,20 +80,20 @@ public class UserRepositoryTests {
         PersonalInfo personalInfo = PersonalInfo.builder()
                 .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu")
-                .lastName("Parosu").build();
+                .firstName("Ned")
+                .lastName("Stark").build();
         User user = User.builder()
-                .handle("NewUser2")
+                .handle("TheWinterIsComing")
                 .personalInfo(personalInfo)
                 .build();
 
         PersonalInfo personalInfo1 = PersonalInfo.builder()
-                .email("Testing1@yahoo.com")
+                .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu1")
-                .lastName("Parosu1").build();
+                .firstName("Robert")
+                .lastName("Baratheon").build();
         User user1 = User.builder()
-                .handle("NewUser3")
+                .handle("TheKing")
                 .personalInfo(personalInfo1)
                 .build();
 
@@ -102,7 +102,7 @@ public class UserRepositoryTests {
         User savedUser1 = userRepo.save(user1);
 
         // Assertions
-        List<User> userList = userRepo.findByHandleContaining("New");
+        List<User> userList = userRepo.findByHandleContaining("The");
 
 
         Assertions.assertThat(userList).isNotNull().hasSize(2);
@@ -112,27 +112,27 @@ public class UserRepositoryTests {
     public void UserRepository_GetOneByHandle_ReturnMoreThanOneUser() {
 //Arrange
 
-        PersonalInfo personalInfo1 = PersonalInfo.builder()
-                .email("Testing1@yahoo.com")
+        PersonalInfo personalInfo = PersonalInfo.builder()
+                .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu1")
-                .lastName("Parosu1").build();
-        User user1 = User.builder()
-                .handle("NewUser1")
-                .personalInfo(personalInfo1)
+                .firstName("Ned")
+                .lastName("Stark").build();
+        User user = User.builder()
+                .handle("TheWinterIsComing")
+                .personalInfo(personalInfo)
                 .build();
 
         // Act
 
-        User savedUser1 = userRepo.save(user1);
+        User savedUser = userRepo.save(user);
 
         // Assertions
-        Optional<User> optionalUser = userRepo.findByHandle(savedUser1.getHandle());
+        Optional<User> optionalFoundUser = userRepo.findByHandle(savedUser.getHandle());
 
-        User savedUser = optionalUser.get();
+        User foundUser = optionalFoundUser.get();
 
 
-        Assertions.assertThat(savedUser).isNotNull();
+        Assertions.assertThat(foundUser).isNotNull();
 
     }
 
@@ -143,11 +143,10 @@ public class UserRepositoryTests {
         PersonalInfo personalInfo = PersonalInfo.builder()
                 .email("Testing@yahoo.com")
                 .married(true)
-                .firstName("Cherescu")
-                .lastName("Parosu")
-                .build();
+                .firstName("Ned")
+                .lastName("Stark").build();
         User user = User.builder()
-                .handle("NewUser")
+                .handle("TheWinterIsComing")
                 .personalInfo(personalInfo)
                 .build();
 

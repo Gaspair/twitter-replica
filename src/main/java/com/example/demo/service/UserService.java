@@ -10,28 +10,25 @@ import java.util.UUID;
 
 @Service
 public class UserService {
-
-    private final UserStore store;
-
     @Autowired
-    public UserService(UserStore store){
-        this.store = store;
-    }
+    private UserStore store;
 
 
-    public ResponseEntity<?> saveUser(UserDTO userDTO){
-        return  store.saveUser(userDTO);
+    public ResponseEntity<?> saveUser(UserDTO userDTO) {
+        return store.saveUser(userDTO);
     }
-    public ResponseEntity<?> getUserById(UUID uuid){
+
+    public ResponseEntity<?> getUserById(UUID uuid) {
         return store.getUserByID(uuid);
     }
-    public ResponseEntity<?> getUsersByHandle(String string, int limit){
-        return store.getUsersByHandle(string,  limit);
+
+    public ResponseEntity<?> getUsersByHandle(String string, int limit) {
+        return store.getUsersByHandle(string, limit);
     }
 
 
-    public ResponseEntity<?> deleteUser(UUID userID){
-       return store.deleteUser(userID);
+    public ResponseEntity<?> deleteUser(UUID userID) {
+        return store.deleteUser(userID);
     }
 
     public ResponseEntity<?> getOneUserByHandle(String handle) {
@@ -39,7 +36,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> updateUser(UUID userID, PersonalInfoDTO userDTO) {
-        return store.updateUser(userID,userDTO);
+        return store.updateUser(userID, userDTO);
     }
 
     public ResponseEntity<?> getUserPersonalInfo(UUID userID) {
